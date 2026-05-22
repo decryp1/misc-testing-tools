@@ -6,8 +6,6 @@ hookfunction(a.Try, function(...)
 	print(...)
 	return true
 end)
---[[ -- run this to remove the hook
-if isfunctionhooked(a.Try) then
-	restorefunction(a.Try)
-end
-]]
+
+-- run this to remove the hook
+--restorefunction(a.Try)
