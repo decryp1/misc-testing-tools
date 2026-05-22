@@ -54,3 +54,31 @@ local function run(ids, packettype, itemid)
         game:GetService("ReplicatedStorage"):WaitForChild("ByteNetReliable"):FireServer(buffer.fromstring(packet))
     end
 end
+
+--[[
+traditionally, you used to be able to do:
+local p = require(game.ReplicatedStorage.Modules.Packets)
+p.SwingTool.send({
+    ["entityIDs"] = {
+        [1] = { ["entityID"] = 123123 }
+    }
+    ["cframe"] = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    ["timestamp"] = game.Workspace:GetServerTimeNow()
+})
+^^ though the game uses a different method for timestamp delivery (less secure and actually easier to exploit):
+local c = require(game:GetService("ReplicatedStorage").Modules.Clock)
+["timestamp"] = c.getServerTime()
+^^ you can exploit the timestamp that this function gives via traceback searches for any module or function named swingTool/SwingTool/swing, etc
+local old; old = hookmetamethod(c.getServerTime, function(...)
+    -- an example of a traceback search but very very pseudo would be:
+    if tostring(debug.traceback()):lower():find("swing") then
+        return game.Workspace:GetServerTimeNow() + 2 -- you would use this for any swing calls, but you'd also want to only spoof every even call so that time checks return later values, reducing swing cooldown
+    end
+    _G.call += 1 -- this would be the even/odd determination (but wouldnt work by itself due to no traceback searching)
+    if _G.call % 2 == 0 then -- modulo == 0 then it's even i think
+        return game.Workspace:GetServerTimeNow() + 1 -- combine with a traceback search to only spoof swingtool calls, every second swing would have no cooldown, since the "if tick() - oldtick > 1 do .. " would return a value of greater than one, meaning you've already "waited" one second
+    else 
+        return old(...)
+    end
+end)
+]]
