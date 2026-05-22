@@ -65,6 +65,7 @@ p.SwingTool.send({
     ["cframe"] = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
     ["timestamp"] = game.Workspace:GetServerTimeNow()
 })
+^^ THIS IS PROBABLY VERY DETECTED DONT USE THIS, SAME FOR EVERY PACKET. JUST BECAUSE YOU DONT GET KICKED DOESNT MEAN U DONT GET FLAGGED
 ^^ though the game uses a different method for timestamp delivery (less secure and actually easier to exploit):
 local c = require(game:GetService("ReplicatedStorage").Modules.Clock)
 ["timestamp"] = c.getServerTime()
