@@ -1,3 +1,23 @@
+--[[
+to hit multiple targets at once:
+run({1661826, 1661875}, "swing")
+
+to hit one target:
+run(1661826, "swing")
+
+to pickup an item or harvest:
+run(7111567, "pickup")
+
+to plant bluefruit:
+run(7109482, "interactstructure", 377)
+
+to open or close the door of a structure:
+run(123123, "toggledoor")
+
+to place a structure:
+run("Campfire", "placestructure", CFrame.new(308.27, -5.92, -1064.12))
+]]
+
 local function float16(v)
     if v == 0 then return 0 end
     local sign = v < 0 and 0x8000 or 0
@@ -33,7 +53,12 @@ local function interactstructureencode(id, itemid)
     return string.pack("<BBI3xH", 0x01, 0x69, id, itemid)
 end
 
-local function run(ids, packettype, itemid)
+local function placestructureencode(buildingname, cf)
+    local x, y, z = cf:ToEulerAnglesXYZ()
+    return string.pack("<BBH", 0x01, 0xE1, #buildingname) .. buildingname .. string.pack("<fffHHH", cf.X, cf.Y, cf.Z, float16(x), float16(y), float16(z))
+end
+
+local function run(ids, packettype, arg1, arg2)
     local packet
     if packettype == "swing" then
         local root = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -47,7 +72,9 @@ local function run(ids, packettype, itemid)
         packet = toggledoorencode(id)
     elseif packettype == "interactstructure" then
         local id = typeof(ids) == "table" and ids[1] or ids
-        packet = interactstructureencode(id, itemid)
+        packet = interactstructureencode(id, arg1)
+    elseif packettype == "placestructure" then
+        packet = placestructureencode(ids, arg1)
     end
     
     if packet then
