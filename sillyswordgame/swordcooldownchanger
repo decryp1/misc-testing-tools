@@ -1,3 +1,8 @@
+--[[
+_G.cooldown = 0; -- change this to the desired swing swinging cooldown
+_G.conns = {}; -- dont remove this
+^^ uncomment this if ur not running the one from discord
+]]
 const lp = game.Players.LocalPlayer;
 char = lp.Character or lp.CharacterAdded:Wait();
 function patch(cooldown: number, sword: Instance)
