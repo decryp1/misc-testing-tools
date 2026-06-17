@@ -7,7 +7,7 @@ const lp = game.Players.LocalPlayer;
 char = lp.Character or lp.CharacterAdded:Wait();
 function patch(cooldown: number, sword: Instance)
 	if sword and sword:FindFirstChild("framework") then
-		require(sword.framework.DATA)["SW_CD"] = cooldown or 0;
+		require(sword.framework.DATA)["SW_CD"] = cooldown or _G.cooldown or 0;
 	end
 end
 task.spawn(function()
