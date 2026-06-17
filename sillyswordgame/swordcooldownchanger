@@ -11,7 +11,7 @@ function patch(cooldown: number, sword: Instance)
 	end
 end
 task.spawn(function()
-	_G.conns["plr"] = typeof(_G.conns["plr"]) == ("ConnectionObject" or "RBXScriptConnection" or "Connection") and _G.conns["plr"] or lp.CharacterAdded:Connect(function(a) task.wait(); char = a; end);
+	_G.conns["plr"] = typeof(_G.conns["plr"]) == ("ConnectionObject" or "RBXScriptConnection" or "Connection") and _G.conns["plr"] or lp.CharacterAdded:Connect(function(a) task.wait(); char = a; _G.conns["ca"]:Disconnect(); _G.conns["ca"] = nil; end);
 	_G.conns["ca"] = typeof(_G.conns["ca"]) == ("ConnectionObject" or "RBXScriptConnection" or "Connection") and _G.conns["ca"] or char.ChildAdded:Connect(function(i) task.wait(); if i:IsA("Tool") then patch(_G.cooldown or 0, i); end end);
 end)
 print("mewo")
