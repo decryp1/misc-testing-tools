@@ -11,7 +11,14 @@ function patch(cooldown: number, sword: Instance)
 	end
 end
 task.spawn(function()
-	_G.conns["plr"] = typeof(_G.conns["plr"]) == ("ConnectionObject" or "RBXScriptConnection" or "Connection") and _G.conns["plr"] or lp.CharacterAdded:Connect(function(a) task.wait(); char = a; _G.conns["ca"]:Disconnect(); _G.conns["ca"] = char.ChildAdded:Connect(function(i) task.wait(); if i:IsA("Tool") then patch(_G.cooldown or 0, i); end end); end);
-	_G.conns["ca"] = typeof(_G.conns["ca"]) == ("ConnectionObject" or "RBXScriptConnection" or "Connection") and _G.conns["ca"] or char.ChildAdded:Connect(function(i) task.wait(); if i:IsA("Tool") then patch(_G.cooldown or 0, i); end end);
+_G.conns["plr"] = typeof(_G.conns["plr"]) == ("ConnectionObject" or "RBXScriptConnection" or "Connection") and _G.conns["plr"] or lp.CharacterAdded:Connect(function(a) char = a; _G.conns["ca"]:Disconnect(); _G.conns["ca"] = char.ChildAdded:Connect(function(i) task.wait(); if i:IsA("Tool") then patch(_G.cooldown or 0, i); end end); for i, v in pairs(char:GetChildren()) do if v:IsA("Tool") then patch(_G.cooldown or 0, v); end end; end);
+_G.conns["ca"] = typeof(_G.conns["ca"]) == ("ConnectionObject" or "RBXScriptConnection" or "Connection") and _G.conns["ca"] or char.ChildAdded:Connect(function(i) task.wait(); if i:IsA("Tool") then patch(_G.cooldown or 0, i); end end);
+_G.conns["constant"] = game.RunService.Heartbeat:Connect(function() 
+	if not char or char:FindFirstChildOfClass("Tool") then return end 
+	d = char:FindFirstChildOfClass("Tool")
+	if d and d:FindFirstChild("framework") then 
+		patch(_G.cooldown,d)
+	end
+end)
 end)
 print("mewo")
