@@ -1,0 +1,12 @@
+const lp = game.Players.LocalPlayer;
+char = lp.Character or lp.CharacterAdded:Wait();
+function patch(cooldown: number, sword: Instance)
+	if sword and sword:FindFirstChild("framework") then
+		require(sword.framework.DATA)["SW_CD"] = _G.cooldown or 0;
+	end
+end
+task.spawn(function()
+	_G.conns["plr"] = typeof(_G.conns["plr"]) == ("ConnectionObject" or "RBXScriptConnection" or "Connection") and _G.conns["plr"] or lp.CharacterAdded:Connect(function(a) task.wait(); char = a; patch(_G.cooldown or 0); end);
+	_G.conns["ca"] = typeof(_G.conns["ca"]) == ("ConnectionObject" or "RBXScriptConnection" or "Connection") and _G.conns["ca"] or char.ChildAdded:Connect(function(i) task.wait(); if i:IsA("Tool") then patch(_G.cooldown or 0, i); end end);
+end)
+print("mewo")
