@@ -21,7 +21,9 @@ utils = {
 	function invitetodiscord()
 		createherklefiles()
 		if readfile("herkleglobals/invited.txt") == ("false" or nil) then
-			if not request then notifyy("your executor does not support request! here is the discord: https://dsc.gg/herkle", 5, Color3.fromRGB(200, 50, 50))
+			if not request then
+				print("ur executor is terrible, check your clipboard for the discord")
+				setclipboard("https://dsc.gg/herkle OR https://discord.gg/uFYfMQGzk8")
 				return
 			end
 			request({
