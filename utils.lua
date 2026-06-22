@@ -1,5 +1,5 @@
 utils = {
-	function createherklefiles()
+	function utils.createherklefiles()
 		isfolder = isfolder or is_folder or checkfolder or check_folder or nil;
 		makefolder = makefolder or make_folder or folder or nil;
 		writefile = writefile or write_file or nil;
@@ -11,15 +11,15 @@ utils = {
 	end
 
 	function addexecution()
-		createherklefiles()
+		utils.createherklefiles()
 		local num=tonumber(readfile("herkleglobals/executions.txt"))
 		if num then
 			writefile("herkleglobals/executions.txt",tostring(num + 1))
 		end
 	end
 
-	function invitetodiscord()
-		createherklefiles()
+	function utils.invitetodiscord()
+		utils.createherklefiles()
 		if readfile("herkleglobals/invited.txt") == ("false" or nil) then
 			if not request then
 				print("ur executor is terrible, check your clipboard for the discord")
@@ -36,7 +36,7 @@ utils = {
 	end
 
 	function getglobals(which: string): string
-		createherklefiles()
+		utils.createherklefiles()
 		return which == "executions" and readfile("herkleglobals/executions.txt") or readfile("herkleglobals/invited.txt")
 	end
 
