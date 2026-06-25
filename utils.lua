@@ -58,6 +58,20 @@ function utils.removeherklenoo(shouldwipeconfigs: boolean)
 		end
 	end
 end
+
+--[[function utils.hook(oldref: string, tohook: function, isCnative: boolean, printvarargs: boolean, toreturn: any)
+	if not oldref then oldref = o; end
+	if not tohook then return end;
+	if isCnative then newfunc = newcclosure(function(...)) else newfunc = function(...) end
+	local oldref; oldref = hookfunction(tohook, newfunc
+		local args = ...
+		local packedargs = table.pack(args)
+		if printvarargs then
+			print(args)
+		end
+		return toreturn or oldref(args);
+	end)
+]]
 return utils
 --[[print(getglobals("executions"), getglobals("invited"))
 utils.invitetodiscord()
