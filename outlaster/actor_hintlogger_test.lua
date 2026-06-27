@@ -1,4 +1,4 @@
-c=game:GetService("CollectionService")
+c=game:GetService("CollectionService") -- was going to use :GetTagged on hints after logging them, but i never did
 a =Instance.new("Actor",workspace)
 _G.t = setmetatable({},{__mode="v"})
 id, ch = create_comm_channel()
