@@ -18,6 +18,18 @@ function utils.addexecution()
 	end
 end
 
+function utils.getdevice()
+	local const gui = game:GetService("GuiService")
+	local const uip = game:GetService("UserInputService")
+	if gui:IsTenFootInterface() then
+		return "xbox"
+	elseif uip.KeyboardEnabled and uip.MouseEnabled then
+		return "pc"
+	elseif uip.TouchEnabled then
+		return "mobile"
+	end
+end
+
 function utils.invitetodiscord()
 	utils.createherklefiles()
 	if readfile("herkleglobals/invited.txt") == ("false" or nil) then
