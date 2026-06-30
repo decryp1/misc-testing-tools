@@ -33,16 +33,13 @@ end
 function utils.invitetodiscord()
 	utils.createherklefiles()
 	if readfile("herkleglobals/invited.txt") == ("false" or nil) then
-		if not request then
-			print("ur executor is terrible, check your clipboard for the discord")
-			setclipboard("https://dsc.gg/herkle OR https://discord.gg/uFYfMQGzk8")
-			return
-		end
-		request({
+			--print("ur executor is terrible, check your clipboard for the discord")
+		setclipboard("https://discord.gg/uFYfMQGzk8")
+		--[[request({
 			Url = "http://127.0.0.1:6463/rpc?v=1", Method = "POST",
 			Headers = {["Content-Type"] = "application/json", ["Origin"] = "https://discord.com"},
 			Body = game:GetService("HttpService"):JSONEncode({cmd = "INVITE_BROWSER", args = {code = "uFYfMQGzk8"}, nonce = game:GetService("HttpService"):GenerateGUID(false)})
-		})
+		})]]
 		writefile("herkleglobals/invited.txt", "true")
 	end
 end
