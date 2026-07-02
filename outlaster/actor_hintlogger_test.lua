@@ -19,5 +19,5 @@ run_on_actor(a,[[
 ]], id)
 --[[
 this is meant to be a more performant hint logger
-my current checks are as minimal and as discriminatorial as possible, but i figured i'd test using parallel threads to weigh performance
+my current checks are as minimal and as discriminatory as possible, but i figured i'd test using parallel threads to weigh performance
 ]]
