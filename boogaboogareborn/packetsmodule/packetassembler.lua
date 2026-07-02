@@ -18,67 +18,100 @@ to place a structure:
 run("Campfire", "placestructure", CFrame.new(308.27, -5.92, -1064.12))
 ]]
 
-local function float16(v)
-    if v == 0 then return 0 end
-    local sign = v < 0 and 0x8000 or 0
-    v = math.abs(v)
-    local exp = math.floor(math.log(v, 2))
-    local mant = math.floor((v / 2 ^ exp) * 1024)
-    return sign + (exp + 15) * 32 + mant
+lp = game.Players.LocalPlayer
+bytenet = game.ReplicatedStorage.ByteNetReliable
+
+local function writefloat16(b, offset, v)
+    if v == 0 then
+        return
+    end
+    local sign = 0
+    if v < 0 then
+        sign = 0x8000
+        v = -v
+    end
+    local m, e = math.frexp(v)
+    if e < -46 then
+        return
+    end
+    buffer.writeu16(b, offset, sign + (e + 14) * 32 + math.floor(m * 2048))
 end
 
 local function swingencode(ids, cf, ts)
-    if typeof(ids) ~= "table" then ids = {ids} end
-
-    local parts = {string.char(0x00, 0x13)}
-    table.insert(parts, string.pack("<H", #ids))
-    for i, v in ipairs(ids) do
-        table.insert(parts, string.pack("<I4x", v))
+    local n = #ids
+    local b = buffer.create(30 + 5 * n)
+    buffer.writeu8(b, 1, 0x13)
+    buffer.writeu16(b, 2, n)
+    local off = 4
+    for i = 1, n do
+        buffer.writeu32(b, off, ids[i])
+        off = off + 5
     end
-    
     local x, y, z = cf:ToEulerAnglesXYZ()
-    table.insert(parts, string.pack("<fffHHHd", cf.X, cf.Y, cf.Z, float16(x), float16(y), float16(z), ts))
-    return table.concat(parts)
+    buffer.writef32(b, off, cf.X)
+    buffer.writef32(b, off + 4, cf.Y)
+    buffer.writef32(b, off + 8, cf.Z)
+    writefloat16(b, off + 12, x)
+    writefloat16(b, off + 14, y)
+    writefloat16(b, off + 16, z)
+    buffer.writef64(b, off + 18, ts)
+    return b
 end
 
-local function pickupencode(id)
-    return string.pack("<BBI3x", 0x01, 0xE7, id)
-end
-
-local function toggledoorencode(entityid)
-    return string.pack("<BBI3x", 0x01, 0x44, entityid)
+local function idencode(cmd, id)
+    local b = buffer.create(6)
+    buffer.writeu8(b, 0, 0x01)
+    buffer.writeu8(b, 1, cmd)
+    buffer.writeu32(b, 2, id)
+    return b
 end
 
 local function interactstructureencode(id, itemid)
-    return string.pack("<BBI3xH", 0x01, 0x69, id, itemid)
+    local b = buffer.create(8)
+    buffer.writeu8(b, 0, 0x01)
+    buffer.writeu8(b, 1, 0x69)
+    buffer.writeu32(b, 2, id)
+    buffer.writeu16(b, 6, itemid)
+    return b
 end
 
 local function placestructureencode(buildingname, cf)
+    local n = #buildingname
+    local b = buffer.create(22 + n)
+    buffer.writeu8(b, 0, 0x01)
+    buffer.writeu8(b, 1, 0xE1)
+    buffer.writeu16(b, 2, n)
+    buffer.writestring(b, 4, buildingname)
+    local off = 4 + n
     local x, y, z = cf:ToEulerAnglesXYZ()
-    return string.pack("<BBH", 0x01, 0xE1, #buildingname) .. buildingname .. string.pack("<fffHHH", cf.X, cf.Y, cf.Z, float16(x), float16(y), float16(z))
+    buffer.writef32(b, off, cf.X)
+    buffer.writef32(b, off + 4, cf.Y)
+    buffer.writef32(b, off + 8, cf.Z)
+    writefloat16(b, off + 12, x)
+    writefloat16(b, off + 14, y)
+    writefloat16(b, off + 16, z)
+    return b
 end
 
 local function run(ids, packettype, arg1, arg2)
-    local packet
+    local b
     if packettype == "swing" then
-        local root = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local character = lp.Character
+        local root = character and character:FindFirstChild("HumanoidRootPart")
         if not root then return end
-        packet = swingencode(ids, root.CFrame, workspace:GetServerTimeNow())
+        if type(ids) ~= "table" then ids = {ids} end
+        b = swingencode(ids, root.CFrame, workspace:GetServerTimeNow())
     elseif packettype == "pickup" then
-        local id = typeof(ids) == "table" and ids[1] or ids
-        packet = pickupencode(id)
+        b = idencode(0xE7, type(ids) == "table" and ids[1] or ids)
     elseif packettype == "toggledoor" then
-        local id = typeof(ids) == "table" and ids[1] or ids
-        packet = toggledoorencode(id)
+        b = idencode(0x44, type(ids) == "table" and ids[1] or ids)
     elseif packettype == "interactstructure" then
-        local id = typeof(ids) == "table" and ids[1] or ids
-        packet = interactstructureencode(id, arg1)
+        b = interactstructureencode(type(ids) == "table" and ids[1] or ids, arg1)
     elseif packettype == "placestructure" then
-        packet = placestructureencode(ids, arg1)
+        b = placestructureencode(ids, arg1)
     end
-    
-    if packet then
-        game:GetService("ReplicatedStorage"):WaitForChild("ByteNetReliable"):FireServer(buffer.fromstring(packet))
+    if b then
+        bytenet:FireServer(b)
     end
 end
 
