@@ -16,3 +16,8 @@ for i = 1, 40 do
 	if i == 1 then print("total arguments logged:", #argss); end
 	print(argss[i])
 end
+for i = 1,40 do
+	if i == 1 then warn("REVERSE"); end
+	print(argss[#argss-i])
+end
+restorefunction(s.canPlace)
