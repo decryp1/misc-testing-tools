@@ -1,13 +1,13 @@
 local s = require(game:GetService("ReplicatedStorage").Modules.GameUtil)
 local tray = s.canPlace
 local argss = {}
-hookfunction(s.canPlace, function(...)
+local o; o = hookfunction(s.canPlace, function(...)
 	local args = {...}
 	for i, v in pairs(args) do
 		--print(i, v)
 		table.insert(argss, v)
 	end
-	return tray(table.unpack(args))
+	return o(table.unpack(args))
 end)
 
 wait(6)
