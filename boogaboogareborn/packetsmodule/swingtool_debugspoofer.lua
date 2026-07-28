@@ -4,7 +4,7 @@ local a = require(game:GetService("ReplicatedStorage").Game.tool.Slash)
 debug.info = newcclosure(function(level, field)
     if not checkcaller() then
         if field == "s" then
-            return game:GetService("ReplicatedStorage").Game.tool.Slash
+            return 'game:GetService("ReplicatedStorage").Game.tool.Slash'
         elseif field == "n" then
             return ""
         elseif field == "f" then
