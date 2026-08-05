@@ -1,6 +1,9 @@
 --idk if this works but i had an old info bypass and figured thats what booga used to use for packet traceback so here it is
 local oldinfo = debug.info
 local a = require(game:GetService("ReplicatedStorage").Game.tool.Slash)
+--isreadonly(getrenv().debug) -> true wowow table.freeze really
+setreadonly(getrenv(), false)
+setreadonly(getrenv().debug, false)
 debug.info = newcclosure(function(level, field)
     if not checkcaller() then
         if field == "s" then
