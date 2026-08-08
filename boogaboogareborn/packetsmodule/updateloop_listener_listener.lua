@@ -10,7 +10,7 @@ local o; o = hookfunction(a.UpdateLoop.getListener(), function(...)
     for i,v in {...} do
         if type(v) == "table" then
             for a,s in v do
-                print(a,s)
+                print(a,s) -- v[1] :: voodoo, v[2] :: food;
             end
         end
     end
