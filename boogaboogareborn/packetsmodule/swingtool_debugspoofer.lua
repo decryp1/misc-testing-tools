@@ -34,6 +34,9 @@ end
 debug.setinfo(swing,{source = "."}) -- change swing to the name of the function that's sending packets. all are affected, not just swinging
 --^^ in the near future, the game may check the actual module name and packet type. for swinging, change '.' to 'ReplicatedStorage.Game.tool'
 
+setstackhidden(swing, true)
+--^^ instead of spoofing and adding a stack level, setstackhidden removes the frame entirely, removing all possible detections if implemented correctly by the executor
+
 -- the last method would be patching/replacing require(game:GetService("ReplicatedStorage").Modules.ByteNet.process.client)[1] and [2], and remove the info check.
 --[[
 the packet assembler already bypasses the checks that the server imposes, since we create our own packets with all bytes preset as normal.
