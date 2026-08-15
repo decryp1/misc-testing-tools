@@ -1,6 +1,3 @@
--- lets you try out mod commands or trolling things or whatever so u know what ur disabling
-local a
-
 a = Instance.new("Part", game.Players.LocalPlayer.Character)
 a.Name = '@ps'
 task.wait(3)
