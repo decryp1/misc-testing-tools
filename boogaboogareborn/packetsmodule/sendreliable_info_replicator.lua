@@ -32,6 +32,6 @@ dummy = function(...)
     return o(...)
 end;
 --setstackhidden(dummy, true)
---^^ during this i found out that only calling and directly replacing send functions are detected
+--^^ during the creation of this i found out that only calling and directly replacing send functions is detected
 -- so it seems that unless ur replacement function has protos (probably), setstackhidden is realistically useless if they add direct caller checks
 o = hookfunction(a.sendReliable, dummy)
